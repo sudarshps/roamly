@@ -6,7 +6,7 @@ import { IoLogIn } from "react-icons/io5";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
 
-const Navbar = () => {
+const Navbar = ({logoColor,button}) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -25,12 +25,12 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className={`text-3xl font-bold ${kanit.className} ${isScrolled?`text-orange-400`:`text-white`}`}>
+        <Link href="/" className={`text-3xl font-bold ${kanit.className} ${isScrolled?`text-orange-400`:logoColor}`}>
           Roamly.
         </Link>
 
         <Link href="/login">
-          <button className={`px-4 py-2 flex items-center gap-2 rounded-md border border-black text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 ${isScrolled?`bg-orange-400`:`bg-white`}`}>
+          <button className={`px-4 py-2 flex items-center gap-2 rounded-md border border-black text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 ${isScrolled?`bg-orange-400`:button}`}>
            <IoLogIn className="text-xl"/>Login
           </button>
         </Link>

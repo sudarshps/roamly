@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <div>
-        <Navbar />
+        <Navbar logoColor={'text-white'} button={'bg-white'}/>
         <div className="bg-green-700 mx-auto px-6 py-4 min-h-screen text-white flex items-center justify-center">
           <AppName />
           <p></p>
