@@ -6,7 +6,12 @@ import { IoLogIn } from "react-icons/io5";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
 
-const Navbar = ({logoColor,button}) => {
+interface NavbarPropsType {
+  logoColor:string;
+  button:string;
+}
+
+const Navbar = ({logoColor,button}:NavbarPropsType) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
