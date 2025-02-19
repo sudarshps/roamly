@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth'
+import NextAuth,{NextAuthConfig} from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
@@ -7,7 +7,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const authOptions = {
+const authOptions:NextAuthConfig = {
   providers:[
     GoogleProvider({
       clientId:process.env.AUTH_GOOGLE_CLIENT_ID,
@@ -62,17 +62,21 @@ const authOptions = {
   callbacks:{
     async jwt({token,user}){
       if(user){        
-        token.id = user.id
-        token.name = user.name
-        token.email = user.email
+        token.id = user.id ?? ''
+        token.name = user.name ?? null
+        token.email = user.email ?? null
       }
       return token
     },
     async session({session,token}){
-      session.user.id = token.id as string
-      session.user.name = token.name as string
-      session.user.email = token.email as string
+      session.user = {
+        id : token.id ?? '',
+        name : token.name ?? '',
+        email : token.email ?? '',
+        emailVerified: null,
+      } as {id:string;name:string;email:string;emailVerified: Date | null}
       return session
+
     }
   }
 }
