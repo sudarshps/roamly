@@ -34,10 +34,19 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json(
-      { success: true, message: "Registration completed!" },
-      { status: 201 }
-    );
+    const response = NextResponse.json({
+      success:true,
+      message:"Registration completed!"
+    })
+
+    response.cookies.set('token',token,{
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      maxAge: 60 * 60, 
+      path: '/', 
+      sameSite: 'strict',
+    })
+    return response
   } catch (error) {
     return NextResponse.json({
       success: false,

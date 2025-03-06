@@ -30,8 +30,19 @@ export async function POST(req:Request){
         if(!isValid) return NextResponse.json({success:false,message:'invalid credentials'},{status:401})
         
         const token = jwt.sign({userId:user.id},process.env.JWT_SECRET as string,{expiresIn:'1h'})
-        
-        return NextResponse.json({success:true,token,name:user.name})
+        const response = NextResponse.json({
+            success:true,
+            token,
+            name:user.name
+        })
+        response.cookies.set('token',token,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === 'production',
+            maxAge:60*60,
+            path:'/',
+            sameSite:'strict'
+        })
+        return response
     } catch (error) {
         return NextResponse.json({success:false,error:`server error:${error}`})
     }

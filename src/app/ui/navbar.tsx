@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ interface NavbarPropsType {
 
 const Navbar = ({ logoColor, button }: NavbarPropsType) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter()
 
   const name = useAuthStore((state) => state.name)
   const clearUser = useAuthStore((state) => state.clearUser)
@@ -41,6 +43,10 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
     signOut()
 
   }  
+
+  const handleRoute = (url:string) => {
+    router.push(url)
+  }
   return (
     <nav
       className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
@@ -80,7 +86,7 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>handleRoute('/myblogs')}>My Blogs</DropdownMenuItem>
               <DropdownMenuItem>Team</DropdownMenuItem>
               <DropdownMenuItem>Subscription</DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
