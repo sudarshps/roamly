@@ -10,7 +10,7 @@ const FormSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-
+   
     console.log('lalallala');
     const formData = await request.formData();
     const file = formData.get('image') as File;
