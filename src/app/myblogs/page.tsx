@@ -4,9 +4,10 @@ import React, { useState } from "react";
 import Navbar from "../ui/navbar";
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
-import axiosInstance from "@/lib/axios";
+import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 
 const Page = () => {
+  const axiosInstance = useAxiosWithAuth()
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<{
     title: string;

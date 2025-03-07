@@ -1,16 +1,16 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware,createRouteMatcher } from "@clerk/nextjs/server";
 
-export function middleware(req:NextRequest){
-  const token = req.cookies.get('token')
+const protectedRoute = createRouteMatcher(["/profile","/myblogs"])
 
-  if(!token){
-    const loginUrl = new URL('/login', req.url);
-    return NextResponse.redirect(loginUrl);
-  }
-  return NextResponse.next();
-}
+export default clerkMiddleware(async(auth,req)=>{
+  if(protectedRoute(req)) await auth.protect()
+});
 
 export const config = {
-  matcher: ['/myblogs/:path*'], 
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 };

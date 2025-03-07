@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Kanit } from "next/font/google";
 import { IoLogIn } from "react-icons/io5";
-import { useAuthStore } from "@/store/authStore";
+// import { useAuthStore } from "@/store/authStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut } from "next-auth/react";
+// import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { SignInButton,useSession,SignOutButton } from "@clerk/nextjs";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
 
@@ -24,11 +25,12 @@ interface NavbarPropsType {
 }
 
 const Navbar = ({ logoColor, button }: NavbarPropsType) => {
+  const {session,isSignedIn} = useSession()
   const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
-  const name = useAuthStore((state) => state.name)
-  const clearUser = useAuthStore((state) => state.clearUser)
+  // const name = useAuthStore((state) => state.name);
+  // const clearUser = useAuthStore((state) => state.clearUser);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -38,15 +40,14 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    clearUser()
-    signOut()
+  // const handleLogout = () => {
+  //   clearUser();
+  //   signOut();
+  // };
 
-  }  
-
-  const handleRoute = (url:string) => {
-    router.push(url)
-  }
+  const handleRoute = (url: string) => {
+    router.push(url);
+  };
   return (
     <nav
       className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
@@ -63,8 +64,9 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
           Roamly.
         </Link>
 
-        {!name ? (
-          <Link href="/login">
+        {!isSignedIn ? (
+          <>
+          <SignInButton mode="modal">
             <button
               className={`px-4 py-2 flex items-center gap-2 rounded-md border border-black text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 ${
                 isScrolled ? `bg-orange-400` : button
@@ -73,7 +75,11 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
               <IoLogIn className="text-xl" />
               Login
             </button>
-          </Link>
+          </SignInButton>
+          {/* <UserButton/> */}
+          {/* <SignOutButton/> */}
+          </>
+          
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -84,12 +90,14 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>handleRoute('/myblogs')}>My Blogs</DropdownMenuItem>
+              <DropdownMenuSeparator/>
+              <DropdownMenuItem onClick={()=> handleRoute("/profile")} className="hover:cursor-pointer">Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleRoute("/myblogs")} className="hover:cursor-pointer">
+                My Blogs
+              </DropdownMenuItem>
               <DropdownMenuItem>Team</DropdownMenuItem>
               <DropdownMenuItem>Subscription</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem><SignOutButton/></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
