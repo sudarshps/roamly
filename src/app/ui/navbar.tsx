@@ -25,7 +25,7 @@ interface NavbarPropsType {
 }
 
 const Navbar = ({ logoColor, button }: NavbarPropsType) => {
-  const {session,isSignedIn} = useSession()
+  const {isSignedIn} = useSession()
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
 
