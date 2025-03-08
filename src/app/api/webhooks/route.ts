@@ -58,12 +58,12 @@ if(evt.type === 'user.created'){
     try {
         const newUser = await prisma.user.create({
             data:{
-                clerkUserId:id,
-                email:email_addresses[0].email_address,
                 name:first_name,
-                image_url:image_url
+                email:email_addresses[0].email_address,
+                image_url:image_url,
+                clerkUserId:id,
             }
-        })
+        }) 
         return new Response(JSON.stringify(newUser), { status: 201 })
 
     } catch (error) {
