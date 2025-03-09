@@ -11,7 +11,6 @@ export default function Home() {
         <Navbar logoColor={'text-white'} button={'bg-white'}/>
         <div className="bg-green-700 mx-auto px-6 py-4 min-h-screen text-white flex items-center justify-center">
           <AppName />
-          <p></p>
         </div>
       </div>
       <div>
