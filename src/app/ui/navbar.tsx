@@ -95,10 +95,10 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
               <DropdownMenuItem onClick={()=> handleRoute("/profile")} className="hover:cursor-pointer">Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleRoute("/createblog")} className="hover:cursor-pointer">Write Blog</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleRoute("/myblogs")} className="hover:cursor-pointer">
                 My Blogs
               </DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
               <DropdownMenuItem>Subscription</DropdownMenuItem>
               <DropdownMenuItem><SignOutButton/></DropdownMenuItem>
             </DropdownMenuContent>

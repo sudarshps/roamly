@@ -2,25 +2,25 @@ import React from "react";
 import { BentoGrid, BentoGridItem } from "../../components/ui/bento-grid";
 import { getAllPosts } from "@/lib/post/action";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function BentoGridDemo() {
-  const posts = await getAllPosts()
+  const posts = await getAllPosts();
 
-  if(!posts || posts.length ===0 ){
-    return <div>No post found!</div>
+  if (!posts || posts.length === 0) {
+    return <div>No post found!</div>;
   }
   return (
     <BentoGrid className="max-w-8xl mx-auto">
       {posts.map((item, i) => {
-        // Define different sizes based on the index
         let sizeClass = "";
-        let titleSize = "text-xl md:text-2xl"; // Default size
+        let titleSize = "text-xl md:text-2xl";
 
         if (i === 0 || i === 4) {
-          sizeClass = "md:col-span-2 md:row-span-2"; // Larger items
+          sizeClass = "md:col-span-2 md:row-span-2";
           titleSize = "text-3xl md:text-5xl";
         } else if (i === 2 || i === 5) {
-          sizeClass = "md:col-span-1 md:row-span-2"; // Taller items
+          sizeClass = "md:col-span-1 md:row-span-2";
           titleSize = "text-2xl md:text-3xl";
         }
 
@@ -28,11 +28,13 @@ export default async function BentoGridDemo() {
           <BentoGridItem
             key={i}
             title={<h1 className={`${titleSize} break-words`}>{item.title}</h1>}
-            description={<p className="text-lg md:text-xl break-words">{item.content}</p>}
+            description={
+              <p className="text-lg md:text-xl break-words">{item.content}</p>
+            }
             header={
               <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl bg-gradient-to-br from-neutral-200 to-neutral-100 group-hover/bento:translate-x-2 transition duration-200">
                 <Image
-                  src={item.image || ''}
+                  src={item.image || ""}
                   alt={item.title}
                   width={500}
                   height={300}
@@ -40,7 +42,16 @@ export default async function BentoGridDemo() {
                 />
               </div>
             }
-            className={sizeClass} 
+            readContent={
+              <div className="text-right">
+                <Link href={`/article/${item.id}`}>
+                  <button className="text-blue-500 hover:underline text-xs">
+                    {`Read more >>`}
+                  </button>
+                </Link>
+              </div>
+            }
+            className={sizeClass}
           />
         );
       })}

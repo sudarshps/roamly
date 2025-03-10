@@ -32,4 +32,5 @@ model Post {
   image String?
   userId Int
   user User @relation(fields:[userId],references:[id])
+  createdAt DateTime @default(now())
 }
