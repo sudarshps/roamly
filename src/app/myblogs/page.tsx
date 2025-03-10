@@ -6,8 +6,9 @@ import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 
+
 const Page = () => {
-  const axiosInstance = useAxiosWithAuth()
+  const axiosInstance = useAxiosWithAuth();
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<{
     title: string;
@@ -82,32 +83,27 @@ const Page = () => {
     });
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formsData = new FormData()
+    const formsData = new FormData();
 
-    formsData.append('title',formData.title)
-    formsData.append('content',formData.content)
+    formsData.append("title", formData.title);
+    formsData.append("content", formData.content);
 
-    if(formData.image){
-      formsData.append('image',formData.image)
+    if (formData.image) {
+      formsData.append("image", formData.image);
     }
 
     try {
-      const res = await axiosInstance.post('/api/addpost',formsData,{
-        headers:{
-          'Content-Type':'multipart/form-data'
-        }
-      })
-
-      console.log(res,'resss');
-      
+      const res = await axiosInstance.post("/api/addpost", formsData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     } catch (error) {
-      console.error('error in submitting form',error);
-      
+      console.error("error in submitting form", error);
     }
-
   };
   return (
     <div>
@@ -153,7 +149,7 @@ const Page = () => {
                 ></textarea>
               </div>
 
-              <div className="mb-4 flex items-center justify-center">
+              <div className="mb-4 flex flex-col items-center justify-center">
                 {/* Image Upload Section */}
                 <div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer">
                   <input
@@ -174,6 +170,7 @@ const Page = () => {
                     <FaPlus className="text-gray-400 text-3xl" />
                   )}
                 </div>
+             
               </div>
 
               <div className="flex space-x-2">

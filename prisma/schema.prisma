@@ -20,5 +20,16 @@ model User {
   email String @unique
   image_url String?
   clerkUserId String @unique
+  posts Post[]
   createdAt DateTime @default(now())
+}
+
+
+model Post {
+  id Int @id @default(autoincrement())
+  title String
+  content String 
+  image String?
+  userId Int
+  user User @relation(fields:[userId],references:[id])
 }

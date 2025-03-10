@@ -15,7 +15,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { SignInButton,useSession,SignOutButton } from "@clerk/nextjs";
+import { SignInButton,useSession,SignOutButton,useUser } from "@clerk/nextjs";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
 
@@ -28,6 +28,9 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
   const {isSignedIn} = useSession()
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
+  const {user} = useUser()
+  const profileImg = user?.imageUrl  
+  const userName = user?.firstName
 
   // const name = useAuthStore((state) => state.name);
   // const clearUser = useAuthStore((state) => state.clearUser);
@@ -84,8 +87,8 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={profileImg} />
+                <AvatarFallback>{userName?userName.slice(0,1):'IMG'}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
