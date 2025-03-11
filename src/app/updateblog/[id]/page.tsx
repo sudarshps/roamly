@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Footer from "@/app/ui/footer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AxiosError } from "axios";
 
 const Page = () => {
   const router = useRouter();
@@ -17,7 +18,8 @@ const Page = () => {
   const { id } = params;
   const axiosInstance = useAxiosWithAuth();
   const [preview, setPreview] = useState<string | null>(null);
-  const [loading,setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(false);
   const [formData, setFormData] = useState<{
     title: string;
     content: string;
@@ -47,11 +49,12 @@ const Page = () => {
           image: null,
         });
         setPreview(postDetails.image);
-        setLoading(false)
+        setLoading(false);
+        setReload(false)
       }
     };
     getPostDetails();
-  }, []);
+  }, [id,reload]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -125,15 +128,26 @@ const Page = () => {
       }).then(() => {
         router.push("/");
       });
-    } catch (error) {
-      console.error("error in submitting form", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "something went wrong!",
-      });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error("error in submitting form", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.response?.data.message,
+        }).then(() => {
+          setReload(true);
+        });
+      }
     }
-  };
+  };  
+  useEffect(() => {
+    if (reload && id) {  
+      router.push(`/updateblog/${id}`)
+      setLoading(true)
+    }
+  }, [reload,id,router]);
+
   return (
     <>
       <Navbar logoColor={"text-orange-400"} button={"bg-white"} />
@@ -154,16 +168,21 @@ const Page = () => {
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Blog Title
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
-                  {loading?<Skeleton className="h-4 w-[250px]"/>:(<input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    placeholder="Enter an attention-grabbing title"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                  />)}
+                  {loading ? (
+                    <Skeleton className="h-4 w-[250px]" />
+                  ) : (
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      placeholder="Enter an attention-grabbing title"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                    />
+                  )}
                 </div>
 
                 <div>
@@ -172,49 +191,62 @@ const Page = () => {
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Blog Content
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
-                  {loading?<Skeleton className="h-4 w-[250px]"/>:(
+                  {loading ? (
+                    <Skeleton className="h-4 w-[250px]" />
+                  ) : (
                     <textarea
-                    id="content"
-                    name="content"
-                    value={formData.content}
-                    onChange={handleChange}
-                    rows={8}
-                    placeholder="Write your blog post content here..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                  ></textarea>
+                      id="content"
+                      name="content"
+                      value={formData.content}
+                      onChange={handleChange}
+                      rows={8}
+                      placeholder="Write your blog post content here..."
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                    ></textarea>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Featured Image
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
-                  {loading?<Skeleton className="h-4 w-[250px]"/>:<div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group hover:border-blue-400 transition duration-200">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                      onChange={handleImageChange}
-                    />
-                      {preview?<Image
-                        src={preview}
-                        alt="Blog featured image"
-                        width={imageDimensions?.width || 800}
-                        height={imageDimensions?.height || 600}
-                        className="w-full h-full object-cover rounded-lg"
-                      />:null}
-                    
-                  </div>}
+                  {loading ? (
+                    <Skeleton className="h-4 w-[250px]" />
+                  ) : (
+                    <div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group hover:border-blue-400 transition duration-200">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                        onChange={handleImageChange}
+                      />
+                      {preview ? (
+                        <Image
+                          src={preview}
+                          alt="Blog featured image"
+                          width={imageDimensions?.width || 800}
+                          height={imageDimensions?.height || 600}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : null}
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                  {loading?<Skeleton className="h-10 w-[200px] rounded-xl"/>:(<button
-                    type="submit"
-                    className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium rounded-lg shadow hover:from-red-500 hover:to-orange-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
-                  >
-                    Publish Blog Post
-                  </button>)}
+                  {loading ? (
+                    <Skeleton className="h-10 w-[200px] rounded-xl" />
+                  ) : (
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium rounded-lg shadow hover:from-red-500 hover:to-orange-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                    >
+                      Publish Blog Post
+                    </button>
+                  )}
                 </div>
               </div>
             </form>

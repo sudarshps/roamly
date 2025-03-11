@@ -8,6 +8,7 @@ import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Footer from "../ui/footer";
+import { AxiosError } from "axios";
 
 const Page = () => {
   const axiosInstance = useAxiosWithAuth();
@@ -81,15 +82,6 @@ const Page = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      if (!res.data.isCreated) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: res.data.message,
-        });
-        return 
-      }
-
       Swal.fire({
         title: "Done!",
         text: res.data.message,
@@ -97,13 +89,15 @@ const Page = () => {
       }).then(() => {
         router.push("/");
       });
-    } catch (error) {
-      console.error("error in submitting form", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: 'something went wrong!',
-      });
+    } catch (error:unknown) {
+      if(error instanceof AxiosError){
+        console.error("error in submitting form", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.response?.data.message,
+        })
+      }
     }
   };
   return (
@@ -130,6 +124,7 @@ const Page = () => {
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Blog Title
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
@@ -148,6 +143,7 @@ const Page = () => {
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Blog Content
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <textarea
                     id="content"
@@ -163,6 +159,7 @@ const Page = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Featured Image
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group hover:border-blue-400 transition duration-200">
                     <input
@@ -184,9 +181,6 @@ const Page = () => {
                         <FaImage className="text-gray-400 text-4xl mb-2 group-hover:text-blue-500 transition duration-200" />
                         <p className="text-gray-500 text-sm">
                           Click or drag to upload image
-                        </p>
-                        <p className="text-gray-400 text-xs mt-1">
-                          Recommended: 1200 × 630px
                         </p>
                       </div>
                     )}
