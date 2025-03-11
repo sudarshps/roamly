@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../ui/navbar";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
+import { useRouter } from "next/navigation";
 
 interface PostListType{
   id:number;
@@ -14,40 +15,28 @@ interface PostListType{
 
 const Page = () => {
   const axiosInstance = useAxiosWithAuth()
+  const router = useRouter()
   const [blogs,setBlogs] = useState<PostListType[]>([])
   useEffect(()=>{
     const fetchBlogList = async() => {
       const list = await axiosInstance.get('/api/post')
       if(list.data){
-        console.log(list.data.postList)
         setBlogs(list.data.postList)
       }
     }
     fetchBlogList()
   },[])
-  // const blogs = [
-  //   {
-  //     id: "1",
-  //     title: "Getting Started with Next.js",
-  //     content: "Next.js is a React framework...",
-  //     author: "John Doe",
-  //     createdAt: "2025-02-15",
-  //   },
-  //   {
-  //     id: "2",
-  //     title: "CSS Tips and Tricks",
-  //     content: "Here are some useful CSS techniques...",
-  //     author: "Jane Smith",
-  //     createdAt: "2025-02-20",
-  //   },
-  //   {
-  //     id: "3",
-  //     title: "JavaScript Best Practices",
-  //     content: "When writing JavaScript...",
-  //     author: "Alex Johnson",
-  //     createdAt: "2025-02-25",
-  //   },
-  // ];
+
+  const handleDelete = async(id:number) => {
+    const res = await axiosInstance.delete('/api/post',{
+      params:{
+        id
+      }
+    })
+    if(res.data){
+
+    }
+  }
 
   return (
     <div>
@@ -83,10 +72,13 @@ const Page = () => {
                       <td className="px-4 py-2 max-w-[200px] truncate whitespace-nowrap overflow-hidden">{blog.title}</td>
                       <td className="px-4 py-2">
                         <div className="flex space-x-2">
-                          <button className="text-blue-500 hover:underline">
+                        <button className="text-blue-500 hover:underline" onClick={()=>router.push(`/article/${blog.id}`)}>
+                            View
+                          </button>
+                          <button className="text-blue-500 hover:underline" onClick={()=>router.push(`/updateblog/${blog.id}`)}>
                             Edit
                           </button>
-                          <button className="text-red-500 hover:underline">
+                          <button className="text-red-500 hover:underline" onClick={()=>handleDelete(blog.id)}>
                             Delete
                           </button>
                         </div>

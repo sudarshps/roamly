@@ -10,6 +10,13 @@ const FormSchema = z.object({
 import { cloudinaryUpload } from '@/utils/cloudinaryUpload';
 import prisma from '@/lib/prisma';
 
+
+interface UpdatedDataType{
+  title:string;
+  content:string;
+  image?:string;
+}
+
 export async function POST(request: NextRequest) {
   try {
 
@@ -101,3 +108,96 @@ export async function GET() {
   }
 }
 
+
+export async function PUT(req:NextRequest){
+  try {
+    const user = await currentUser()
+
+    if(!user){
+      return NextResponse.json({message:'Unauthorized'},{status:401})
+    }
+    const {searchParams} = new URL(req.url)
+    const id = searchParams.get('id')
+    
+    if(!id){
+      return NextResponse.json({message:'no article found!'},{status:400})
+    }
+    const formData = await req.formData();
+
+    let imgUrl = ''
+
+    if(formData.get('image')){
+      const file = formData.get('image') as File;
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = new Uint8Array(arrayBuffer)
+      const {url} = await cloudinaryUpload(buffer)
+      if(url) imgUrl = url
+    }
+    
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+
+    const validatedData = FormSchema.parse({
+      title,
+      content,
+      image: imgUrl, 
+    })
+
+    const updateData: UpdatedDataType = {
+      title:validatedData.title,
+      content:validatedData.content
+    }
+
+    if(validatedData.image !== ''){
+      updateData.image = validatedData.image
+    }
+
+    const postId = Number(id)
+
+    
+    const post = await prisma.post.update({
+      where:{id:postId},
+      data:updateData
+    })
+    
+    if(!post){
+      return NextResponse.json({message:'failed to update post!'},{status:500})
+    }
+    return NextResponse.json({ message: 'Post updated successfully', post }, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json({ message: 'Failed to create post', error }, { status: 500 });
+  }
+}
+
+
+export async function DELETE(req:NextRequest){
+  try {
+    const user = await currentUser()
+    
+    if(!user){
+      return NextResponse.json({message:'Unauthorized'},{status:401})
+    }
+    const {searchParams} = new URL(req.url)
+    const id = searchParams.get('id')
+
+    if(!id){
+      return NextResponse.json({message:'No article found!'},{status:400})
+    }
+
+    const postId = Number(id)
+    const deletePost = await prisma.post.delete({
+      where:{id:postId}
+    })
+
+    if(!deletePost){
+      return NextResponse.json({message:'Failed to delete post!'},{status:500})
+    }
+
+    return NextResponse.json({message:'Post deleted successfully',deletePost},{status:200})
+
+  } catch (error) {
+    console.error('error while deleting post',error);
+    NextResponse.json({message:'Internal server error',error},{status:500})
+  }
+}
