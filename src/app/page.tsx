@@ -3,6 +3,7 @@ import AppName from "../app/ui/appName";
 import Grid from "../app/ui/bentoGrid";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Footer from "./ui/footer";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
           <Grid />
         </Suspense>
       </div>
+      <Footer/>
     </>
   );
 }

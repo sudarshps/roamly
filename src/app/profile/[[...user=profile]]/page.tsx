@@ -1,5 +1,6 @@
 import { UserProfile } from "@clerk/nextjs";
 import Navbar from "@/app/ui/navbar";
+import Footer from "@/app/ui/footer";
 
 export default function Profile() {
   return (
@@ -10,6 +11,7 @@ export default function Profile() {
         <UserProfile path="/profile"/>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

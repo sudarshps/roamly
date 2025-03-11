@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     })
 
     if(!userData){
-      return NextResponse.json({message:'cannot find the user in db'},{status:500})
+      return NextResponse.json({message:'cannot find the user in db',isCreated:false},{status:500})
     }
     const {id} = userData
 
@@ -61,12 +61,12 @@ export async function POST(request: NextRequest) {
     })
 
     if(!newPost){
-      return NextResponse.json({message:'failed to create post!'},{status:500})
+      return NextResponse.json({message:'failed to create post!',isCreated:false},{status:500})
     }
     
-    return NextResponse.json({ message: 'Post created successfully', newPost }, { status: 200 });
+    return NextResponse.json({ message: 'Post created successfully', newPost,isCreated:true }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Failed to create post', error }, { status: 500 });
+    return NextResponse.json({ message: 'Failed to create post', error,isCreated:false }, { status: 500 });
   }
 }
 
@@ -120,7 +120,7 @@ export async function PUT(req:NextRequest){
     const id = searchParams.get('id')
     
     if(!id){
-      return NextResponse.json({message:'no article found!'},{status:400})
+      return NextResponse.json({message:'no article found!',isUpdated:false},{status:400})
     }
     const formData = await req.formData();
 
@@ -161,9 +161,9 @@ export async function PUT(req:NextRequest){
     })
     
     if(!post){
-      return NextResponse.json({message:'failed to update post!'},{status:500})
+      return NextResponse.json({message:'failed to update post!',isUpdated:false},{status:500})
     }
-    return NextResponse.json({ message: 'Post updated successfully', post }, { status: 200 });
+    return NextResponse.json({ message: 'Post updated successfully', post,isUpdated:true }, { status: 200 });
 
   } catch (error) {
     return NextResponse.json({ message: 'Failed to create post', error }, { status: 500 });
@@ -182,7 +182,7 @@ export async function DELETE(req:NextRequest){
     const id = searchParams.get('id')
 
     if(!id){
-      return NextResponse.json({message:'No article found!'},{status:400})
+      return NextResponse.json({message:'No article found!',isDeleted:false},{status:400})
     }
 
     const postId = Number(id)
@@ -191,10 +191,10 @@ export async function DELETE(req:NextRequest){
     })
 
     if(!deletePost){
-      return NextResponse.json({message:'Failed to delete post!'},{status:500})
+      return NextResponse.json({message:'Failed to delete post!',isDeleted:false},{status:500})
     }
 
-    return NextResponse.json({message:'Post deleted successfully',deletePost},{status:200})
+    return NextResponse.json({message:'Post deleted successfully',deletePost,isDeleted:true},{status:200})
 
   } catch (error) {
     console.error('error while deleting post',error);

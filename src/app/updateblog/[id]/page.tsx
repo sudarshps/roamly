@@ -6,8 +6,12 @@ import Image from "next/image";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 import { useParams } from "next/navigation";
 import { FaImage, FaEdit } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import Footer from "@/app/ui/footer";
 
 const Page = () => {
+  const router = useRouter();
   const params = useParams();
   const { id } = params;
   const axiosInstance = useAxiosWithAuth();
@@ -103,9 +107,28 @@ const Page = () => {
           id,
         },
       });
-      console.log("res", res);
+      if (!res.data.isUpdated) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: res.data.message,
+        });
+        return;
+      }
+      Swal.fire({
+        title: "Done!",
+        text: res.data.message,
+        icon: "success",
+      }).then(() => {
+        router.push("/");
+      });
     } catch (error) {
       console.error("error in submitting form", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "something went wrong!",
+      });
     }
   };
   return (
@@ -204,6 +227,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

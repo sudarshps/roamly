@@ -126,7 +126,7 @@ importers:
         specifier: ^1.61.3
         version: 1.61.3
       sweetalert2:
-        specifier: ^11.16.1
+        specifier: ^11.17.2
         version: 11.17.2
       tailwind-merge:
         specifier: ^3.0.1

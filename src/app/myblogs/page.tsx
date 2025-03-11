@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Navbar from "../ui/navbar";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import Footer from "../ui/footer";
 
 interface PostListType {
   id: number;
@@ -33,8 +35,20 @@ const Page = () => {
         id,
       },
     });
-    if (res.data) {
+    if (!res.data.isDeleted) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: res.data.message,
+      });
+      return;
     }
+    Swal.fire({
+      title: "Done!",
+      text: res.data.message,
+      icon: "success",
+    });
+    setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
   };
 
   return (
@@ -221,6 +235,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
