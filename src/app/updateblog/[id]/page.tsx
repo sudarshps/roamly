@@ -5,10 +5,11 @@ import Navbar from "../../ui/navbar";
 import Image from "next/image";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 import { useParams } from "next/navigation";
-import { FaImage, FaEdit } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Footer from "@/app/ui/footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Page = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const Page = () => {
   const { id } = params;
   const axiosInstance = useAxiosWithAuth();
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading,setLoading] = useState(true)
   const [formData, setFormData] = useState<{
     title: string;
     content: string;
@@ -45,6 +47,7 @@ const Page = () => {
           image: null,
         });
         setPreview(postDetails.image);
+        setLoading(false)
       }
     };
     getPostDetails();
@@ -135,7 +138,7 @@ const Page = () => {
     <>
       <Navbar logoColor={"text-orange-400"} button={"bg-white"} />
       <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-3xl mt-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-3xl mt-8">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-orange-400 to-red-500 py-6 px-8">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -152,7 +155,7 @@ const Page = () => {
                   >
                     Blog Title
                   </label>
-                  <input
+                  {loading?<Skeleton className="h-4 w-[250px]"/>:(<input
                     type="text"
                     id="title"
                     name="title"
@@ -160,7 +163,7 @@ const Page = () => {
                     onChange={handleChange}
                     placeholder="Enter an attention-grabbing title"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                  />
+                  />)}
                 </div>
 
                 <div>
@@ -170,7 +173,8 @@ const Page = () => {
                   >
                     Blog Content
                   </label>
-                  <textarea
+                  {loading?<Skeleton className="h-4 w-[250px]"/>:(
+                    <textarea
                     id="content"
                     name="content"
                     value={formData.content}
@@ -179,48 +183,38 @@ const Page = () => {
                     placeholder="Write your blog post content here..."
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
                   ></textarea>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Featured Image
                   </label>
-                  <div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group hover:border-blue-400 transition duration-200">
+                  {loading?<Skeleton className="h-4 w-[250px]"/>:<div className="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group hover:border-blue-400 transition duration-200">
                     <input
                       type="file"
                       accept="image/*"
                       className="absolute inset-0 opacity-0 cursor-pointer z-10"
                       onChange={handleImageChange}
                     />
-                    {preview ? (
-                      <Image
+                      {preview?<Image
                         src={preview}
                         alt="Blog featured image"
                         width={imageDimensions?.width || 800}
                         height={imageDimensions?.height || 600}
                         className="w-full h-full object-cover rounded-lg"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <FaImage className="text-gray-400 text-4xl mb-2 group-hover:text-blue-500 transition duration-200" />
-                        <p className="text-gray-500 text-sm">
-                          Click or drag to upload image
-                        </p>
-                        <p className="text-gray-400 text-xs mt-1">
-                          Recommended: 1200 × 630px
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                      />:null}
+                    
+                  </div>}
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                  <button
+                  {loading?<Skeleton className="h-10 w-[200px] rounded-xl"/>:(<button
                     type="submit"
                     className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium rounded-lg shadow hover:from-red-500 hover:to-orange-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
                   >
                     Publish Blog Post
-                  </button>
+                  </button>)}
                 </div>
               </div>
             </form>

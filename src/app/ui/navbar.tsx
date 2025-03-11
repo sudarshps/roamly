@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Kanit } from "next/font/google";
 import { IoLogIn } from "react-icons/io5";
-// import { useAuthStore } from "@/store/authStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { SignInButton,useSession,SignOutButton,useUser } from "@clerk/nextjs";
 
 const kanit = Kanit({ weight: "700", subsets: ["latin"] });
@@ -27,13 +24,10 @@ interface NavbarPropsType {
 const Navbar = ({ logoColor, button }: NavbarPropsType) => {
   const {isSignedIn} = useSession()
   const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter();
   const {user} = useUser()
   const profileImg = user?.imageUrl  
   const userName = user?.firstName
 
-  // const name = useAuthStore((state) => state.name);
-  // const clearUser = useAuthStore((state) => state.clearUser);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -43,14 +37,8 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // const handleLogout = () => {
-  //   clearUser();
-  //   signOut();
-  // };
 
-  const handleRoute = (url: string) => {
-    router.push(url);
-  };
+
   return (
     <nav
       className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
@@ -79,8 +67,6 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
               Login
             </button>
           </SignInButton>
-          {/* <UserButton/> */}
-          {/* <SignOutButton/> */}
           </>
           
         ) : (
@@ -94,13 +80,12 @@ const Navbar = ({ logoColor, button }: NavbarPropsType) => {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
-              <DropdownMenuItem onClick={()=> handleRoute("/profile")} className="hover:cursor-pointer">Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleRoute("/createblog")} className="hover:cursor-pointer">Write Blog</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleRoute("/myblogs")} className="hover:cursor-pointer">
-                My Blogs
-              </DropdownMenuItem>
+              <Link href={'/profile'}><DropdownMenuItem className="hover:cursor-pointer">Profile</DropdownMenuItem></Link>
+              <Link href={'/createblog'}><DropdownMenuItem className="hover:cursor-pointer">Write Blog</DropdownMenuItem></Link>
+              <Link href={'/myblogs'}><DropdownMenuItem className="hover:cursor-pointer">My Blogs
+              </DropdownMenuItem></Link>
               <DropdownMenuItem>Subscription</DropdownMenuItem>
-              <DropdownMenuItem><SignOutButton/></DropdownMenuItem>
+              <SignOutButton><DropdownMenuItem className="hover:cursor-pointer">Sign Out</DropdownMenuItem></SignOutButton>
             </DropdownMenuContent>
           </DropdownMenu>
         )}

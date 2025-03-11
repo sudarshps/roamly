@@ -2,7 +2,7 @@ import Navbar from "../app/ui/navbar";
 import AppName from "../app/ui/appName";
 import Grid from "../app/ui/bentoGrid";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonCard } from "./ui/skeletonCard";
 import Footer from "./ui/footer";
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
         </div>
       </div>
       <div>
-        <Suspense fallback={<Skeleton/>}>
+        <Suspense fallback={<SkeletonCard/>}>
           <Grid />
         </Suspense>
       </div>

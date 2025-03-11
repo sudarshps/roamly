@@ -110,7 +110,7 @@ const Page = () => {
     <>
       <Navbar logoColor={"text-orange-400"} button={"bg-white"} />
       <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl mt-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl mt-8">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-orange-400 to-red-500 py-6 px-8">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">

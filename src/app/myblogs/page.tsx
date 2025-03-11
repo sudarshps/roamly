@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import Navbar from "../ui/navbar";
 import useAxiosWithAuth from "@/lib/useAxiosWithAuth";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import Footer from "../ui/footer";
+import { SkeletonDemo } from "../ui/skeletonList";
+import Link from "next/link";
 
 interface PostListType {
   id: number;
@@ -19,11 +21,13 @@ const Page = () => {
   const axiosInstance = useAxiosWithAuth();
   const router = useRouter();
   const [blogs, setBlogs] = useState<PostListType[]>([]);
+  const [loading,setLoading] = useState<boolean>(true)
   useEffect(() => {
     const fetchBlogList = async () => {
       const list = await axiosInstance.get("/api/post");
       if (list.data) {
         setBlogs(list.data.postList);
+        setLoading(false)
       }
     };
     fetchBlogList();
@@ -56,7 +60,7 @@ const Page = () => {
       <Navbar logoColor={"text-orange-400"} button={"bg-white"} />
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-12">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto mt-16">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto mt-8">
             <div className="border-b border-gray-200">
               <div className="flex flex-col sm:flex-row justify-between items-center p-6 bg-gradient-to-r from-orange-400 to-red-500">
                 <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
@@ -101,7 +105,7 @@ const Page = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                {loading?(<div className="p-4"><SkeletonDemo/></div>):(<tbody className="bg-white divide-y divide-gray-200">
                   {blogs.map((blog, i) => (
                     <tr key={i} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 max-w-[200px] truncate whitespace-nowrap overflow-hidden font-medium text-gray-900">
@@ -135,11 +139,10 @@ const Page = () => {
                             </svg>
                             View
                           </button>
+                          <Link href={`/updateblog/${blog.id}`}>
                           <button
                             className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
-                            onClick={() =>
-                              router.push(`/updateblog/${blog.id}`)
-                            }
+    
                           >
                             <svg
                               className="w-4 h-4 mr-1"
@@ -157,6 +160,8 @@ const Page = () => {
                             </svg>
                             Edit
                           </button>
+                          </Link>
+                          
                           <button
                             className="text-red-600 hover:text-red-800 font-medium flex items-center"
                             onClick={() => handleDelete(blog.id)}
@@ -181,33 +186,8 @@ const Page = () => {
                       </td>
                     </tr>
                   ))}
-                </tbody>
+                </tbody>)}
               </table>
-
-              {blogs.length === 0 && (
-                <div className="text-center py-12">
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                    />
-                  </svg>
-                  <h3 className="mt-2 text-lg font-medium text-gray-900">
-                    No blog posts yet
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Get started by creating your first blog post.
-                  </p>
-                </div>
-              )}
             </div>
 
             <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end">
