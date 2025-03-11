@@ -13,6 +13,7 @@ interface PostListType {
   title: string;
   content: string;
   image: string;
+  createdAt:string;
   userId: number;
 }
 
@@ -99,6 +100,9 @@ const Page = () => {
                       Title
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Published At
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -116,6 +120,9 @@ const Page = () => {
                       >
                         <td className="px-6 py-4 max-w-[200px] truncate whitespace-nowrap overflow-hidden font-medium text-gray-900">
                           {blog.title}
+                        </td>
+                        <td className="px-6 py-4 max-w-[200px] truncate whitespace-nowrap overflow-hidden font-medium text-gray-900">
+                          {blog.createdAt.split('T')[0]}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex space-x-4">
