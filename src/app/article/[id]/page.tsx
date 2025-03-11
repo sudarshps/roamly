@@ -43,7 +43,11 @@ const ArticlePage = () => {
             <Image src={post.image || ''} width={1200} height={400} alt="content"/>
             </div>
             <h1 className="text-4xl font-bold">{post.title}</h1>
-            <p className="text-lg">{post.content}</p>
+            <p className="text-lg space-y-4">{post.content.split('\n').map((paragraph, index) => (
+              <p key={index} className="leading-relaxed text-gray-800">
+                {paragraph}
+              </p>
+            ))}</p>
         </div>
       </div>
     </>
