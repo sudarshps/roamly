@@ -9,6 +9,7 @@ const FormSchema = z.object({
 });
 import { cloudinaryUpload } from "@/utils/cloudinaryUpload";
 import prisma from "@/lib/prisma";
+import { headers } from "next/headers";
 
 interface UpdatedDataType {
   title: string;
@@ -133,7 +134,12 @@ export async function GET() {
 
     return NextResponse.json(
       { message: "Post fetch successful", postList },
-      { status: 200 }
+      {
+        status: 200, 
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
     );
   } catch (error) {
     console.error("error on fetching post list", error);
