@@ -8,7 +8,7 @@
     "build": "prisma generate && next build",
     "start": "concurrently \"npm run dev\" \"npm run webhooks\"",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma migrate deploy"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.4",
