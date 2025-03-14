@@ -1,10 +1,12 @@
 import React from "react";
 import { BentoGrid, BentoGridItem } from "../../components/ui/bento-grid";
+import { unstable_noStore as noStore } from 'next/cache';
 import { getAllPosts } from "@/lib/post/action";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function BentoGridDemo() {
+  noStore();
   const posts = await getAllPosts();
 
   return (
