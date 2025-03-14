@@ -9,7 +9,6 @@ const FormSchema = z.object({
 });
 import { cloudinaryUpload } from "@/utils/cloudinaryUpload";
 import prisma from "@/lib/prisma";
-import { headers } from "next/headers";
 
 interface UpdatedDataType {
   title: string;
