@@ -12,7 +12,7 @@ export const cloudinaryUpload = async(buffer:Uint8Array):Promise<CloudinaryUploa
       });
 
       return await new Promise((res,rej)=>{
-        cloudinary.uploader.upload_stream({folder:'roamly'},function(err,result){
+        cloudinary.uploader.upload_stream({folder:'roamly',quality_analysis:true},function(err,result){
           if(err){
             rej(err)
             return

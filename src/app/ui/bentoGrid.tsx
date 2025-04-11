@@ -12,8 +12,8 @@ export default async function BentoGridDemo() {
   return (
     <BentoGrid className="max-w-8xl mx-auto">
       {posts.map((item, i) => {
-        let sizeClass = "";
-        let titleSize = "text-xl md:text-2xl";
+        let sizeClass = "md:col-span-1 md:row-span-2";
+        let titleSize = "text-2xl md:text-3xl";
 
         if (i === 0 || i === 4) {
           sizeClass = "md:col-span-2 md:row-span-2";
