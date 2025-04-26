@@ -31,6 +31,14 @@ const Page = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
+      if(!file.type.startsWith("image/")){
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: 'Only accepts image format!',
+        })
+        return
+      }
       setFormData({
         ...formData,
         image: file,

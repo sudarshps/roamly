@@ -94,10 +94,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req:Request) {
   try {
     const user = await currentUser();
-
+    const {searchParams} = new URL(req.url)
+    const query = searchParams.get('val')
+    const currentPage = Number(searchParams.get('page'))
+    const pageSize = 5
+    const skip = (currentPage-1) * pageSize
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -116,13 +120,37 @@ export async function GET() {
 
     const { id } = userData;
 
+    
+    if(query?.trim()){
+      const postList = await prisma.post.findMany({
+        where:{
+          userId:id,
+            OR:[
+                {
+                    title:{
+                        contains:query,
+                        mode:'insensitive'
+                    }
+                },
+            ]
+        }
+    })
+
+    return NextResponse.json(
+      { message: "Post fetch successful", postList }
+    )
+
+    }
+
     const postList = await prisma.post.findMany({
       where: {
         userId: id,
       },
       orderBy:{
         createdAt:'desc'
-      }
+      },
+      skip,
+      take:pageSize
     });
     if (!postList) {
       return NextResponse.json(
@@ -131,8 +159,13 @@ export async function GET() {
       );
     }
 
+    const total = await prisma.post.count({where:{
+      userId:id
+    }})
+    
+
     return NextResponse.json(
-      { message: "Post fetch successful", postList },
+      { message: "Post fetch successful", postList,totalPosts:total },
       {
         status: 200, 
         headers: {
